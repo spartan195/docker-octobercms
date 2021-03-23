@@ -33,10 +33,6 @@ RUN openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
     -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" \
     -keyout /etc/ssl/private/ssl-cert-snakeoil.key  -out /etc/ssl/certs/ssl-cert-snakeoil.pem
 
-RUN rm /etc/apache2/sites-available/default-ssl.conf
-
-COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
-
 RUN a2enmod rewrite ssl && a2ensite default-ssl
 
 COPY config/docker /usr/src/octobercms-config-docker
