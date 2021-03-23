@@ -29,7 +29,15 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN curl -sS https://getcomposer.org/installer | php -- --1 --install-dir=/usr/local/bin --filename=composer && \
   /usr/local/bin/composer global require hirak/prestissimo
 
-RUN a2enmod rewrite
+RUN openssl req -new -newkey rsa:4096 -nodes \
+    -keyout /etc/ssl/private/ssl-cert-snakeoil.key -out /etc/ssl/certs/ssl-cert-snakeoil.crt \
+    -subj "/C=EU/ST=Spain/L=Reus/O=Dis/CN=www.example.com"
+
+RUN rm /etc/apache2/sites-available/default-ssl.conf
+
+COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+
+RUN a2enmod rewrite ssl && a2ensite default-ssl
 
 COPY config/docker /usr/src/octobercms-config-docker
 
